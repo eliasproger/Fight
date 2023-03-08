@@ -60,7 +60,7 @@ npc_table_create = """CREATE TABLE NPC
              (HP int, ATK int, name text, type text, armor int,
               level int, exp_for_kill int, lvl_for_fight int)"""
 
-energy_thread = Thread(target=player_cl.energy, args=(), daemon=True)
+# energy_thread = Thread(target=player_cl.energy, args=(), daemon=True)
 
 # for i in range(10):
 #     insert("NPC", (20+i*2, 5+i, "Goblin" if i % 2 else "Porosya", "NPC", 100, 0, 10+i, 1))
@@ -84,7 +84,7 @@ def inventory():
 # energy_thread.start()
 @bot.message_handler(commands=['start'])
 def register_player(message):
-    # create_player(message.chat.id, message.from_user.username)
+    create_player(message.chat.id, message.from_user.username)
     bot.send_message(message.chat.id, "Привіт", reply_markup=startKBoard)
 
 

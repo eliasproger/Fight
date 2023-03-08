@@ -1,6 +1,6 @@
 import time
 
-from unit import Unit
+from lib.unit import Unit
 
 
 class Player(Unit):

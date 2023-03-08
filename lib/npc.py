@@ -1,4 +1,4 @@
-from unit import Unit
+from lib.unit import Unit
 class NPC(Unit):
     def __init__(self, HP, ATK, name, type, armor, level, exp_for_kill, lvl_for_fight):
         super().__init__(HP, ATK, name, type, armor, level)
