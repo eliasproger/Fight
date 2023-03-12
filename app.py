@@ -8,7 +8,7 @@ from lib.orm import SQLiteORM
 from lib.player import Player
 from lib.npc import NPC
 
-orm = SQLiteORM("sqlite_python.db")
+
 bot = telebot.TeleBot("6102591950:AAErdHGwvvB8kKCKtCZCPUaZBAJT4BlhG1A")
 startKBoard = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True)
 arena_key = types.KeyboardButton(text='Арена')
@@ -19,10 +19,11 @@ startKBoard.add(arena_key, shop_key, inventory_key)
 player_cl = None
 
 
-def create_player(chat_id, name):
+def create_player(chat_id, name, ids):
+    orm = SQLiteORM("sqlite_python.db")
     res = orm.select("Basic_Player", "*")
     HP, ATK, type, armor, level, energy, critical_chance, exp_for_lvl_up = res[0]
-    id = orm.select("Player", "*")[-1][0]
+    id = orm.select("Player", "id")[-1][0]+1
     orm.insert("Player",
                (id, name, HP, ATK, type, armor, level, energy, 0, critical_chance, 0, exp_for_lvl_up, chat_id))
     orm.sqlite_connection.commit()
@@ -66,7 +67,7 @@ npc_table_create = """CREATE TABLE NPC
 #     insert("NPC", (20+i*2, 5+i, "Goblin" if i % 2 else "Porosya", "NPC", 100, 0, 10+i, 1))
 #     sqlite_connection.commit()
 
-npcs = orm.select("NPC", "*")
+# npcs = orm.select("NPC", "*")
 
 
 def arena():
@@ -84,7 +85,8 @@ def inventory():
 # energy_thread.start()
 @bot.message_handler(commands=['start'])
 def register_player(message):
-    create_player(message.chat.id, message.from_user.username)
+    create_player(message.chat.id, message.from_user.username, 1)
+
     bot.send_message(message.chat.id, "Привіт", reply_markup=startKBoard)
 
 
@@ -100,6 +102,7 @@ def text_handler(message):
 
 @bot.message_handler(commands=['new'])
 def new_player(message):
+    orm = SQLiteORM("sqlite_python.db")
     res = orm.select("Basic_Player", "*")
     HP, ATK, type, armor, level, energy, critical_chance, exp_for_lvl_up = res[0]
     orm.update("Player",
